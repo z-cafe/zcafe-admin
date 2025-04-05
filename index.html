@@ -1,46 +1,105 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZCafe 儲值與扣款後台</title>
-  <link rel="stylesheet" href="admin.css" />
-</head>
-<body>
-  <div class="container">
-    <h1>ZCafe 帳務後台</h1>
+document.addEventListener("DOMContentLoaded", function () {
+  const searchBtn = document.getElementById("searchBtn");
+  const searchInput = document.getElementById("searchInput");
+  const resultDiv = document.getElementById("result");
+  const editSection = document.getElementById("editSection");
 
-    <div class="section">
-      <label for="searchInput">輸入 LINE ID / 姓名 / 電話：</label>
-      <input type="text" id="searchInput" placeholder="搜尋會員…" />
-      <button id="searchBtn">查詢會員</button>
-    </div>
+  const nameSpan = document.getElementById("name");
+  const phoneSpan = document.getElementById("phone");
+  const lineIdSpan = document.getElementById("lineId");
+  const schoolIdSpan = document.getElementById("schoolId");
+  const currentPointsSpan = document.getElementById("currentPoints");
 
-    <div id="memberInfo" class="section hidden">
-      <h2>會員資料</h2>
-      <p><strong>姓名：</strong><span id="infoName"></span></p>
-      <p><strong>電話：</strong><span id="infoPhone"></span></p>
-      <p><strong>LINE ID：</strong><span id="infoLineId"></span></p>
-      <p><strong>學校處室編號：</strong><span id="infoDept"></span></p>
-      <p><strong>目前點數：</strong><span id="infoBalance"></span></p>
+  const actionType = document.getElementById("actionType");
+  const amountInput = document.getElementById("amount");
+  const descriptionInput = document.getElementById("description");
+  const cashierInput = document.getElementById("cashier");
+  const submitBtn = document.getElementById("submitBtn");
 
-      <div class="section">
-        <label>操作：</label>
-        <select id="actionType">
-          <option value="add">儲值</option>
-          <option value="deduct">扣款</option>
-        </select>
+  let currentMember = null;
 
-        <input type="number" id="amountInput" placeholder="金額" />
-        <input type="text" id="descInput" placeholder="結帳內容" />
-        <input type="text" id="operatorInput" placeholder="結帳人" />
-        <button id="confirmBtn">確認操作</button>
-      </div>
-    </div>
+  // 查詢會員
+  searchBtn.addEventListener("click", () => {
+    const keyword = searchInput.value.trim();
+    if (!keyword) {
+      alert("請輸入要查詢的姓名、電話或 LINE ID");
+      return;
+    }
 
-    <div id="messageBox" class="section"></div>
-  </div>
+    fetch("https://script.google.com/macros/s/AKfycbyHGyVzcMn4QZ_jX3B61s7FErQzhq6FPBUirrVZVl6jq83ssCYZl9y4kjvxreCqXAc6Mg/exec?keyword=" + encodeURIComponent(keyword))
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success" && data.member) {
+          currentMember = data.member;
 
-  <script src="admin.js"></script>
-</body>
-</html>
+          nameSpan.textContent = currentMember.name;
+          phoneSpan.textContent = currentMember.phone;
+          lineIdSpan.textContent = currentMember.lineId;
+          schoolIdSpan.textContent = currentMember.schoolId;
+          currentPointsSpan.textContent = currentMember.points;
+
+          editSection.style.display = "block";
+          resultDiv.textContent = "";
+        } else {
+          editSection.style.display = "none";
+          resultDiv.textContent = "查無此會員";
+        }
+      })
+      .catch((err) => {
+        console.error("查詢錯誤：", err);
+        resultDiv.textContent = "發生錯誤，請稍後再試。";
+      });
+  });
+
+  // 儲值或扣款
+  submitBtn.addEventListener("click", () => {
+    if (!currentMember) return;
+
+    const action = actionType.value;
+    const amount = parseInt(amountInput.value, 10);
+    const description = descriptionInput.value.trim();
+    const cashier = cashierInput.value.trim();
+
+    if (isNaN(amount) || amount <= 0) {
+      alert("請輸入正確的金額");
+      return;
+    }
+
+    if (!description || !cashier) {
+      alert("請填寫結帳內容與結帳人");
+      return;
+    }
+
+    const payload = {
+      lineId: currentMember.lineId,
+      name: currentMember.name,
+      phone: currentMember.phone,
+      schoolId: currentMember.schoolId,
+      action,
+      amount,
+      description,
+      cashier,
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbwRZjtQWPdlpd4lrDqd7aQl6eLp1745BWPJ5wkAcL8GtVqikXCDJYVfTQ5ivW5mQ1iFgg/exec", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          alert("操作成功！");
+          currentPointsSpan.textContent = data.newPoints;
+          amountInput.value = "";
+          descriptionInput.value = "";
+          cashierInput.value = "";
+        } else {
+          alert("操作失敗：" + data.message);
+        }
+      })
+      .catch((err) => {
+        console.error("提交錯誤：", err);
+        alert("發生錯誤，請稍後再試。");
+      });
+  });
+});
