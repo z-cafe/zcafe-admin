@@ -1,95 +1,105 @@
-const queryUrl = 'https://script.google.com/macros/s/AKfycbwRZjtQWPdlpd4lrDqd7aQl6eLp1745BWPJ5wkAcL8GtVqikXCDJYVfTQ5ivW5mQ1iFgg/exec';
-const actionUrl = 'https://script.google.com/macros/s/AKfycbxx57qpph9PcjK_W7HOAakgbo4QceR894xDbk1m3XkerT-KptqvgxsAtEHBVG1py7ib/exec';
+document.addEventListener("DOMContentLoaded", function () {
+  const searchBtn = document.getElementById("searchBtn");
+  const searchInput = document.getElementById("searchInput");
+  const resultDiv = document.getElementById("result");
+  const editSection = document.getElementById("editSection");
 
-const searchBtn = document.getElementById('searchBtn');
-const confirmBtn = document.getElementById('confirmBtn');
-const userInfo = document.getElementById('userInfo');
-const operationSection = document.getElementById('operationSection');
-const messageBox = document.getElementById('messageBox');
+  const nameSpan = document.getElementById("name");
+  const phoneSpan = document.getElementById("phone");
+  const lineIdSpan = document.getElementById("lineId");
+  const schoolIdSpan = document.getElementById("schoolId");
+  const currentPointsSpan = document.getElementById("currentPoints");
 
-let selectedMember = null;
+  const actionType = document.getElementById("actionType");
+  const amountInput = document.getElementById("amount");
+  const descriptionInput = document.getElementById("description");
+  const cashierInput = document.getElementById("cashier");
+  const submitBtn = document.getElementById("submitBtn");
 
-// 查詢會員資料
-searchBtn.addEventListener('click', () => {
-  const keyword = document.getElementById('searchInput').value.trim();
-  if (!keyword) {
-    alert('請輸入電話、LINE ID 或姓名');
-    return;
-  }
+  let currentMember = null;
 
-  userInfo.textContent = '查詢中...';
-  operationSection.classList.add('hidden');
-  selectedMember = null;
+  // 查詢會員
+  searchBtn.addEventListener("click", () => {
+    const keyword = searchInput.value.trim();
+    if (!keyword) {
+      alert("請輸入要查詢的姓名、電話或 LINE ID");
+      return;
+    }
 
-  fetch(`${queryUrl}?keyword=${encodeURIComponent(keyword)}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.status === 'success' && data.data) {
-        selectedMember = data.data;
-        userInfo.innerHTML = `
-          <strong>姓名：</strong>${selectedMember.姓名}<br>
-          <strong>電話：</strong>${selectedMember.電話}<br>
-          <strong>LINE ID：</strong>${selectedMember.LINE_ID}<br>
-          <strong>目前點數：</strong>${selectedMember.點數餘額}
-        `;
-        operationSection.classList.remove('hidden');
-      } else {
-        userInfo.textContent = '查無會員資料';
-      }
+    fetch("https://script.google.com/macros/s/AKfycbyHGyVzcMn4QZ_jX3B61s7FErQzhq6FPBUirrVZVl6jq83ssCYZl9y4kjvxreCqXAc6Mg/exec?keyword=" + encodeURIComponent(keyword))
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success" && data.member) {
+          currentMember = data.member;
+
+          nameSpan.textContent = currentMember.name;
+          phoneSpan.textContent = currentMember.phone;
+          lineIdSpan.textContent = currentMember.lineId;
+          schoolIdSpan.textContent = currentMember.schoolId;
+          currentPointsSpan.textContent = currentMember.points;
+
+          editSection.style.display = "block";
+          resultDiv.textContent = "";
+        } else {
+          editSection.style.display = "none";
+          resultDiv.textContent = "查無此會員";
+        }
+      })
+      .catch((err) => {
+        console.error("查詢錯誤：", err);
+        resultDiv.textContent = "發生錯誤，請稍後再試。";
+      });
+  });
+
+  // 儲值或扣款
+  submitBtn.addEventListener("click", () => {
+    if (!currentMember) return;
+
+    const action = actionType.value;
+    const amount = parseInt(amountInput.value, 10);
+    const description = descriptionInput.value.trim();
+    const cashier = cashierInput.value.trim();
+
+    if (isNaN(amount) || amount <= 0) {
+      alert("請輸入正確的金額");
+      return;
+    }
+
+    if (!description || !cashier) {
+      alert("請填寫結帳內容與結帳人");
+      return;
+    }
+
+    const payload = {
+      lineId: currentMember.lineId,
+      name: currentMember.name,
+      phone: currentMember.phone,
+      schoolId: currentMember.schoolId,
+      action,
+      amount,
+      description,
+      cashier,
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbwRZjtQWPdlpd4lrDqd7aQl6eLp1745BWPJ5wkAcL8GtVqikXCDJYVfTQ5ivW5mQ1iFgg/exec", {
+      method: "POST",
+      body: JSON.stringify(payload),
     })
-    .catch(err => {
-      console.error(err);
-      userInfo.textContent = '查詢發生錯誤';
-    });
-});
-
-// 儲值或扣款確認
-confirmBtn.addEventListener('click', () => {
-  const action = document.getElementById('actionSelect').value;
-  const amount = parseInt(document.getElementById('amountInput').value.trim(), 10);
-  const content = document.getElementById('contentInput').value.trim();
-  const cashier = document.getElementById('cashierInput').value.trim();
-
-  if (!selectedMember || isNaN(amount) || !content || !cashier) {
-    alert('請填寫所有欄位');
-    return;
-  }
-
-  const postData = {
-    line_id: selectedMember.LINE_ID,
-    phone: selectedMember.電話,
-    name: selectedMember.姓名,
-    unit: selectedMember.學校處室編號,
-    action,
-    amount,
-    content,
-    cashier
-  };
-
-  confirmBtn.disabled = true;
-  messageBox.textContent = '處理中...';
-
-  fetch(actionUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(postData)
-  })
-    .then(res => res.json())
-    .then(result => {
-      if (result.status === 'success') {
-        messageBox.textContent = '操作成功！';
-        document.getElementById('amountInput').value = '';
-        document.getElementById('contentInput').value = '';
-        document.getElementById('cashierInput').value = '';
-      } else {
-        messageBox.textContent = '操作失敗：' + result.message;
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      messageBox.textContent = '發生錯誤';
-    })
-    .finally(() => {
-      confirmBtn.disabled = false;
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          alert("操作成功！");
+          currentPointsSpan.textContent = data.newPoints;
+          amountInput.value = "";
+          descriptionInput.value = "";
+          cashierInput.value = "";
+        } else {
+          alert("操作失敗：" + data.message);
+        }
+      })
+      .catch((err) => {
+        console.error("提交錯誤：", err);
+        alert("發生錯誤，請稍後再試。");
+      });
+  });
 });
