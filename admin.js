@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
   // 請將以下 URL 替換成你的後台 App Script 部署 URL
-  // 會員資料功能 (新增會員 & 查詢會員) 使用會員資料試算表：
+  // 會員資料功能 (新增會員 & 查詢會員)
   const memberDataUrl = 'https://script.google.com/macros/s/AKfycbwQi3bYG8F_sgSdqysaP3aK6B6C2gsbUyb6wpl55H_ikwAtS4JSdpA4qFByk9pJ_VD5/exec';
-  // 點數調整功能 使用另一個試算表：
+  // 點數調整功能
   const adjustPointsUrl = 'https://script.google.com/macros/s/AKfycbwxXd4ZRvBD--eOMEz3S-etWTWX7gGTmF3tyPk6fa8Eo7s4X0sdiJ-4kwnTehZK3KaZ/exec';
 
   // JSONP 請求輔助函式
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const actionSelect = document.getElementById('actionSelect');
   actionSelect.addEventListener('change', function() {
     const selectedAction = actionSelect.value;
-    // 隱藏所有區塊：僅針對新增會員與會員點數調整兩個區塊
+    // 隱藏所有區塊（只操作新增會員與點數調整區塊）
     document.getElementById('addMemberSection').classList.add('hidden');
     document.getElementById('adjustPointsSection').classList.add('hidden');
     
@@ -52,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     addMsg.textContent = '新增會員中...';
-
     const url = `${memberDataUrl}?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&lineID=${encodeURIComponent(lineID)}&dept=${encodeURIComponent(dept)}&point=${encodeURIComponent(initialPoints)}`;
     jsonpRequest(url, function(data) {
       addMsg.textContent = data.message || JSON.stringify(data);
@@ -61,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // -----------------------
   // 會員點數調整功能（含會員查詢與操作）
-  // 查詢會員部分：使用 JSONP GET 請求
   const searchBtn = document.getElementById('searchBtn');
   const memberInfoDiv = document.getElementById('memberInfo');
   const adjustOperationDiv = document.getElementById('adjustOperation');
@@ -102,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // 調整點數操作：使用 fetch POST 請求
   const adjustBtn = document.getElementById('adjustBtn');
   adjustBtn.addEventListener('click', function() {
-    const action = document.getElementById('actionType').value; // "add" 或 "deduct"
+    const action = document.getElementById('actionType').value;
     const amount = parseInt(document.getElementById('adjustAmount').value.trim(), 10);
     const desc = document.getElementById('adjustDesc').value.trim();
     const operator = document.getElementById('adjustOperator').value.trim();
