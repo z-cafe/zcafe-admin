@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   // 請將以下 URL 替換成你的後台 App Script 部署 URL
   // 會員資料功能 (新增會員 & 查詢會員) 使用會員資料試算表：
-  const memberDataUrl = 'https://script.google.com/macros/s/AKfycbw2gnikGkLqAQnrI2ZX_9ppd1Xwke1xoQtgbUI-IdNPqM4PAtQP68Q4M4vhwpC6kyPu/exec';
+  const memberDataUrl = 'https://script.google.com/macros/s/AKfycbyadEOUM2jeBUm3XjF-APHAgmm101AwaE2gxTTFeU3e7Miazo-x6-ov0WHXUxcBkPbIPA/exec';
   // 點數調整功能 使用另一個 Excel：
   const adjustPointsUrl = 'https://script.google.com/macros/s/AKfycbyExqeQZCsDS92pTl_wFqsvw468EBSQ6UhUMvRos344ILOAid7djXRpuLieGW__7B61/exec';
   
