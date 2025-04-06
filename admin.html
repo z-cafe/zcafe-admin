@@ -3,34 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZCafe 儲值與扣款後台</title>
+  <title>ZCafe 後台管理系統</title>
   <link rel="stylesheet" href="admin.css" />
 </head>
 <body>
   <div class="container">
-    <h1>ZCafe 帳務後台</h1>
+    <h1>ZCafe 後台管理系統</h1>
 
+    <!-- 會員查詢區塊 -->
     <div class="section">
       <label for="searchInput">輸入 LINE ID / 姓名 / 電話：</label>
       <input type="text" id="searchInput" placeholder="搜尋會員…" />
       <button id="searchBtn">查詢會員</button>
     </div>
 
+    <!-- 會員資料與操作區塊，初始隱藏 -->
     <div id="memberInfo" class="section hidden">
       <h2>會員資料</h2>
-      <p><strong>姓名：</strong><span id="infoName"></span></p>
-      <p><strong>電話：</strong><span id="infoPhone"></span></p>
-      <p><strong>LINE ID：</strong><span id="infoLineId"></span></p>
-      <p><strong>學校處室編號：</strong><span id="infoDept"></span></p>
-      <p><strong>目前點數：</strong><span id="infoBalance"></span></p>
-
-      <div class="section">
-        <label>操作：</label>
+      <div id="memberDetails">
+        <p><strong>姓名：</strong><span id="infoName"></span></p>
+        <p><strong>電話：</strong><span id="infoPhone"></span></p>
+        <p><strong>LINE ID：</strong><span id="infoLineId"></span></p>
+        <p><strong>學校處室編號：</strong><span id="infoDept"></span></p>
+        <p><strong>目前點數：</strong><span id="infoBalance"></span></p>
+      </div>
+      <!-- 操作區塊 -->
+      <div id="operationSection" class="section">
+        <h3>操作</h3>
+        <label for="actionType">選擇操作：</label>
         <select id="actionType">
           <option value="add">儲值</option>
           <option value="deduct">扣款</option>
         </select>
-
         <input type="number" id="amountInput" placeholder="金額" />
         <input type="text" id="descInput" placeholder="結帳內容" />
         <input type="text" id="operatorInput" placeholder="結帳人" />
@@ -38,9 +42,9 @@
       </div>
     </div>
 
+    <!-- 結果訊息 -->
     <div id="messageBox" class="section"></div>
   </div>
-
   <script src="admin.js"></script>
 </body>
 </html>
