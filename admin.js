@@ -5,14 +5,30 @@ document.addEventListener('DOMContentLoaded', function() {
   // 點數調整功能 使用另一個試算表：
   const adjustPointsUrl = 'https://script.google.com/macros/s/AKfycbwxXd4ZRvBD--eOMEz3S-etWTWX7gGTmF3tyPk6fa8Eo7s4X0sdiJ-4kwnTehZK3KaZ/exec';
 
+  // JSONP 請求輔助函式
+  function jsonpRequest(url, callback) {
+    const callbackName = 'jsonp_' + Date.now();
+    const script = document.createElement('script');
+    script.src = url + (url.indexOf('?') === -1 ? '?' : '&') + 'callback=' + callbackName;
+    window[callbackName] = function(data) {
+      callback(data);
+      delete window[callbackName];
+      if (script.parentNode) {
+        document.body.removeChild(script);
+      }
+    };
+    document.body.appendChild(script);
+  }
+
   // 功能選擇下拉選單事件
   const actionSelect = document.getElementById('actionSelect');
   actionSelect.addEventListener('change', function() {
     const selectedAction = actionSelect.value;
     // 隱藏所有區塊
     document.getElementById('addMemberSection').classList.add('hidden');
+    document.getElementById('searchMemberSection').classList.add('hidden');
     document.getElementById('adjustPointsSection').classList.add('hidden');
-
+    
     if (selectedAction === 'addMember') {
       document.getElementById('addMemberSection').classList.remove('hidden');
     } else if (selectedAction === 'adjustPoints') {
@@ -44,23 +60,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // JSONP 請求輔助函式
-  function jsonpRequest(url, callback) {
-    const callbackName = 'jsonp_' + Date.now();
-    const script = document.createElement('script');
-    script.src = url + (url.indexOf('?') === -1 ? '?' : '&') + 'callback=' + callbackName;
-    window[callbackName] = function(data) {
-      callback(data);
-      delete window[callbackName];
-      if (script.parentNode) {
-        document.body.removeChild(script);
-      }
-    };
-    document.body.appendChild(script);
-  }
-
   // -----------------------
   // 會員點數調整功能（含會員查詢與操作）
+  // 查詢會員部分：使用 JSONP GET 請求
   const searchBtn = document.getElementById('searchBtn');
   const memberInfoDiv = document.getElementById('memberInfo');
   const adjustOperationDiv = document.getElementById('adjustOperation');
@@ -98,8 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // -----------------------
-  // 調整點數操作（使用 fetch POST 請求）
+  // 調整點數操作：使用 fetch POST 請求
   const adjustBtn = document.getElementById('adjustBtn');
   adjustBtn.addEventListener('click', function() {
     const action = document.getElementById('actionType').value; // "add" 或 "deduct"
@@ -134,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(res => res.json())
       .then(result => {
         if (result.status === 'success') {
-          adjustMsg.textContent = '操作成功！';
+          adjustMsg.textContent = '操作成功！ 新點數：' + result.newPoints;
           document.getElementById('adjustAmount').value = '';
           document.getElementById('adjustDesc').value = '';
           document.getElementById('adjustOperator').value = '';
