@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectedAction = actionSelect.value;
     // 隱藏所有區塊
     document.getElementById('addMemberSection').classList.add('hidden');
-    document.getElementById('searchMemberSection').classList.add('hidden');
+    // 移除 searchMemberSection 參考，因為你的 HTML 沒有這個區塊
     document.getElementById('adjustPointsSection').classList.add('hidden');
     
     if (selectedAction === 'addMember') {
