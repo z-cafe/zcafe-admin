@@ -1,45 +1,75 @@
-<!-- 新增會員區塊 -->
-<div id="addMemberSection" class="section">
-  <h2>新增會員</h2>
-  <input type="text" id="newName" placeholder="會員姓名" />
-  <input type="text" id="newPhone" placeholder="會員電話" />
-  <input type="text" id="newLineID" placeholder="會員 LINE ID" />
-  <input type="text" id="newDept" placeholder="學校處室編號" />
-  <input type="number" id="newInitialPoints" placeholder="初始點數" />
-  <button id="addMemberBtn">加入會員</button>
-  <div id="addMemberMsg" class="result-area"></div>
-</div>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZCafe 後台管理系統</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>ZCafe 後台管理系統</h1>
+    
+    <!-- 功能選擇區 -->
+    <div id="actionSelector" class="section">
+      <h2>請選擇操作</h2>
+      <select id="actionSelect">
+        <option value="none">選擇操作</option>
+        <option value="addMember">新增會員</option>
+        <option value="searchMember">查詢會員</option>
+        <option value="adjustPoints">會員點數調整</option>
+      </select>
+    </div>
 
-<hr/>
+    <!-- 新增會員區塊 -->
+    <div id="addMemberSection" class="section hidden">
+      <h2>新增會員</h2>
+      <input type="text" id="newName" placeholder="會員姓名" />
+      <input type="text" id="newPhone" placeholder="會員電話" />
+      <input type="text" id="newLineID" placeholder="會員 LINE ID" />
+      <input type="text" id="newDept" placeholder="學校處室編號" />
+      <input type="number" id="newInitialPoints" placeholder="初始點數" />
+      <button id="addMemberBtn">加入會員</button>
+      <div id="addMemberMsg" class="result-area"></div>
+    </div>
+    
+    <hr/>
+    
+    <!-- 查詢會員區塊 -->
+    <div id="searchMemberSection" class="section hidden">
+      <h2>查詢會員</h2>
+      <input type="text" id="searchInput" placeholder="輸入姓名、電話或 LINE ID查詢會員" />
+      <button id="searchBtn">查詢會員</button>
+      
+      <!-- 顯示會員資料 (查詢結果) -->
+      <div id="memberInfo" class="section hidden">
+        <h3>會員資料</h3>
+        <p><strong>姓名：</strong><span id="infoName"></span></p>
+        <p><strong>電話：</strong><span id="infoPhone"></span></p>
+        <p><strong>LINE ID：</strong><span id="infoLineID"></span></p>
+        <p><strong>學校處室編號：</strong><span id="infoDept"></span></p>
+        <p><strong>目前點數：</strong><span id="infoBalance"></span></p>
+      </div>
+    </div>
 
-<!-- 點數調整區塊 -->
-<div id="adjustPointsSection" class="section">
-  <h2>點數調整</h2>
-  <input type="text" id="searchInput" placeholder="輸入姓名、電話或 LINE ID查詢會員" />
-  <button id="searchBtn">查詢會員</button>
-  
-  <!-- 顯示會員資料 (查詢結果) -->
-  <div id="memberInfo" class="section hidden">
-    <h3>會員資料</h3>
-    <p><strong>姓名：</strong><span id="infoName"></span></p>
-    <p><strong>電話：</strong><span id="infoPhone"></span></p>
-    <p><strong>LINE ID：</strong><span id="infoLineID"></span></p>
-    <p><strong>學校處室編號：</strong><span id="infoDept"></span></p>
-    <p><strong>目前點數：</strong><span id="infoBalance"></span></p>
+    <hr/>
+    
+    <!-- 點數調整區塊 -->
+    <div id="adjustPointsSection" class="section hidden">
+      <h2>會員點數調整</h2>
+      <label for="actionType">選擇操作：</label>
+      <select id="actionType">
+        <option value="add">儲值</option>
+        <option value="deduct">扣款</option>
+      </select>
+      <input type="number" id="adjustAmount" placeholder="金額" />
+      <input type="text" id="adjustDesc" placeholder="結帳內容" />
+      <input type="text" id="adjustOperator" placeholder="結帳人" />
+      <button id="adjustBtn">確認操作</button>
+      <div id="adjustMsg" class="result-area"></div>
+    </div>
+
   </div>
-  
-  <!-- 點數調整操作區塊 -->
-  <div id="adjustOperation" class="section hidden">
-    <label for="actionType">選擇操作：</label>
-    <select id="actionType">
-      <option value="add">儲值</option>
-      <option value="deduct">扣款</option>
-    </select>
-    <input type="number" id="adjustAmount" placeholder="金額" />
-    <input type="text" id="adjustDesc" placeholder="結帳內容" />
-    <input type="text" id="adjustOperator" placeholder="結帳人" />
-    <button id="adjustBtn">確認操作</button>
-  </div>
-  
-  <div id="adjustMsg" class="result-area"></div>
-</div>
+  <script src="admin.js"></script>
+</body>
+</html>
