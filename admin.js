@@ -24,9 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const actionSelect = document.getElementById('actionSelect');
   actionSelect.addEventListener('change', function() {
     const selectedAction = actionSelect.value;
-    // 隱藏所有區塊
+    // 隱藏所有區塊：僅針對新增會員與會員點數調整兩個區塊
     document.getElementById('addMemberSection').classList.add('hidden');
-    // 移除 searchMemberSection 參考，因為你的 HTML 沒有這個區塊
     document.getElementById('adjustPointsSection').classList.add('hidden');
     
     if (selectedAction === 'addMember') {
