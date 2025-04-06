@@ -1,20 +1,19 @@
 document.addEventListener('DOMContentLoaded', function() {
   // 請將以下 URL 替換成你的後台 App Script 部署 URL
-  const addMemberUrl = 'https://script.google.com/macros/s/AKfycbwRZjtQWPdlpd4lrDqd7aQl6eLp1745BWPJ5wkAcL8GtVqikXCDJYVfTQ5ivW5mQ1iFgg/exec'; // 修改為實際 URL
-  const queryUrl = 'https://script.google.com/macros/s/AKfycbwRZjtQWPdlpd4lrDqd7aQl6eLp1745BWPJ5wkAcL8GtVqikXCDJYVfTQ5ivW5mQ1iFgg/exec';   // 修改為實際 URL
-  const adjustPointsUrl = 'https://script.google.com/macros/s/AKfycbxx57qpph9PcjK_W7HOAakgbo4QceR894xDbk1m3XkerT-KptqvgxsAtEHBVG1py7ib/exec'; // 修改為實際 URL
+  // 會員資料功能 (新增會員 & 查詢會員) 使用會員資料試算表：
+  const memberDataUrl = 'https://script.google.com/macros/s/AKfycbw2gnikGkLqAQnrI2ZX_9ppd1Xwke1xoQtgbUI-IdNPqM4PAtQP68Q4M4vhwpC6kyPu/exec';
+  // 點數調整功能 使用另一個 Excel：
+  const adjustPointsUrl = 'https://script.google.com/macros/s/AKfycbyExqeQZCsDS92pTl_wFqsvw468EBSQ6UhUMvRos344ILOAid7djXRpuLieGW__7B61/exec';
   
-  // 操作選擇區塊的事件監聽器
+  // 功能選擇下拉選單事件
   const actionSelect = document.getElementById('actionSelect');
   actionSelect.addEventListener('change', function() {
     const selectedAction = actionSelect.value;
-
     // 隱藏所有區塊
     document.getElementById('addMemberSection').classList.add('hidden');
     document.getElementById('searchMemberSection').classList.add('hidden');
     document.getElementById('adjustPointsSection').classList.add('hidden');
-
-    // 顯示相對應區塊
+    
     if (selectedAction === 'addMember') {
       document.getElementById('addMemberSection').classList.remove('hidden');
     } else if (selectedAction === 'searchMember') {
@@ -24,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  // -----------------------
   // 新增會員功能
   const addMemberBtn = document.getElementById('addMemberBtn');
   addMemberBtn.addEventListener('click', () => {
@@ -41,7 +41,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     addMsg.textContent = '新增會員中...';
 
-    const url = `${addMemberUrl}?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&lineID=${encodeURIComponent(lineID)}&dept=${encodeURIComponent(dept)}&point=${encodeURIComponent(initialPoints)}`;
+    // 傳送新增會員資料（使用 GET 請求）
+    const url = `${memberDataUrl}?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&lineID=${encodeURIComponent(lineID)}&dept=${encodeURIComponent(dept)}&point=${encodeURIComponent(initialPoints)}`;
     
     fetch(url)
       .then(res => res.text())
@@ -54,12 +55,12 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   });
 
-  // 查詢會員資料 (使用會員資料試算表)
+  // -----------------------
+  // 查詢會員資料功能
   const searchBtn = document.getElementById('searchBtn');
   const memberInfoDiv = document.getElementById('memberInfo');
   const adjustOperationDiv = document.getElementById('adjustOperation');
   const adjustMsg = document.getElementById('adjustMsg');
-
   let selectedMember = null;
 
   searchBtn.addEventListener('click', () => {
@@ -74,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
     adjustOperationDiv.classList.add('hidden');
     selectedMember = null;
     
-    fetch(`${queryUrl}?keyword=${encodeURIComponent(keyword)}`)
+    fetch(`${memberDataUrl}?keyword=${encodeURIComponent(keyword)}`)
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && data.data) {
@@ -98,7 +99,8 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   });
 
-  // 調整點數操作 (使用點數調整試算表)
+  // -----------------------
+  // 調整點數操作
   const adjustBtn = document.getElementById('adjustBtn');
   adjustBtn.addEventListener('click', () => {
     const action = document.getElementById('actionType').value; // "add" 或 "deduct"
