@@ -7,12 +7,12 @@ body {
 }
 
 .container {
-  max-width: 500px;
+  max-width: 600px;
   margin: auto;
   background-color: #111;
   padding: 20px;
   border-radius: 16px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(255,255,255,0.1);
 }
 
 h1, h2, h3 {
@@ -54,7 +54,8 @@ button:hover {
   display: none;
 }
 
-#messageBox {
+.result-area {
+  margin-top: 10px;
   text-align: center;
-  font-weight: bold;
+  font-size: 18px;
 }
