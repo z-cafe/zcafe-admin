@@ -1,31 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // 請將以下 URL 替換成你的後台 App Script 部署 URL
   // 會員資料功能 (新增會員 & 查詢會員) 使用會員資料試算表：
   const memberDataUrl = 'https://script.google.com/macros/s/AKfycbwQi3bYG8F_sgSdqysaP3aK6B6C2gsbUyb6wpl55H_ikwAtS4JSdpA4qFByk9pJ_VD5/exec';
-  // 點數調整功能 使用另一個試算表，請使用最新的網址：
+  // 點數調整功能 使用另一個試算表：
   const adjustPointsUrl = 'https://script.google.com/macros/s/AKfycbwxXd4ZRvBD--eOMEz3S-etWTWX7gGTmF3tyPk6fa8Eo7s4X0sdiJ-4kwnTehZK3KaZ/exec';
-  
+
   // 功能選擇下拉選單事件
   const actionSelect = document.getElementById('actionSelect');
   actionSelect.addEventListener('change', function() {
     const selectedAction = actionSelect.value;
     // 隱藏所有區塊
     document.getElementById('addMemberSection').classList.add('hidden');
-    document.getElementById('searchMemberSection').classList.add('hidden');
     document.getElementById('adjustPointsSection').classList.add('hidden');
-    
+
     if (selectedAction === 'addMember') {
       document.getElementById('addMemberSection').classList.remove('hidden');
-    } else if (selectedAction === 'searchMember') {
-      document.getElementById('searchMemberSection').classList.remove('hidden');
     } else if (selectedAction === 'adjustPoints') {
       document.getElementById('adjustPointsSection').classList.remove('hidden');
     }
   });
 
   // -----------------------
-  // 新增會員功能
+  // 新增會員功能（使用 JSONP GET 請求）
   const addMemberBtn = document.getElementById('addMemberBtn');
-  addMemberBtn.addEventListener('click', () => {
+  addMemberBtn.addEventListener('click', function() {
     const name = document.getElementById('newName').value.trim();
     const phone = document.getElementById('newPhone').value.trim();
     const lineID = document.getElementById('newLineID').value.trim();
@@ -40,9 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     addMsg.textContent = '新增會員中...';
 
-    // 傳送新增會員資料（使用 GET 請求）
     const url = `${memberDataUrl}?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&lineID=${encodeURIComponent(lineID)}&dept=${encodeURIComponent(dept)}&point=${encodeURIComponent(initialPoints)}`;
-    
     jsonpRequest(url, function(data) {
       addMsg.textContent = data.message || JSON.stringify(data);
     });
@@ -64,14 +60,14 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // -----------------------
-  // 查詢會員資料功能（使用 JSONP 以解決 CORS 問題）
+  // 會員點數調整功能（含會員查詢與操作）
   const searchBtn = document.getElementById('searchBtn');
   const memberInfoDiv = document.getElementById('memberInfo');
   const adjustOperationDiv = document.getElementById('adjustOperation');
   const adjustMsg = document.getElementById('adjustMsg');
   let selectedMember = null;
 
-  searchBtn.addEventListener('click', () => {
+  searchBtn.addEventListener('click', function() {
     const keyword = document.getElementById('searchInput').value.trim();
     if (!keyword) {
       alert('請輸入會員識別資訊 (姓名、電話或 LINE ID)');
@@ -105,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // -----------------------
   // 調整點數操作（使用 fetch POST 請求）
   const adjustBtn = document.getElementById('adjustBtn');
-  adjustBtn.addEventListener('click', () => {
+  adjustBtn.addEventListener('click', function() {
     const action = document.getElementById('actionType').value; // "add" 或 "deduct"
     const amount = parseInt(document.getElementById('adjustAmount').value.trim(), 10);
     const desc = document.getElementById('adjustDesc').value.trim();
