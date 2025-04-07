@@ -40,6 +40,13 @@
       <input type="text" id="searchInput" placeholder="輸入姓名、電話或 LINE ID" />
       <button id="searchMemberBtn">查詢會員</button>
 
+      <!-- 多筆會員選擇器 -->
+      <div id="multipleResults" class="section hidden">
+        <label for="memberSelect">請選擇正確的會員：</label>
+        <select id="memberSelect"></select>
+        <button id="selectMemberBtn">確認選擇</button>
+      </div>
+
       <!-- 查詢結果顯示 -->
       <div id="memberInfo" class="section hidden">
         <h3>會員資料</h3>
