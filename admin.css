@@ -1,61 +1,113 @@
+/* admin.css - Z-Café 極簡黑白風格 */
+
 body {
-  font-family: Arial, sans-serif;
-  background-color: #000;
+  font-family: 'Helvetica Neue', sans-serif;
+  background: #000;
   color: #fff;
-  margin: 0;
-  padding: 20px;
+  padding: 2rem;
 }
 
 .container {
-  max-width: 600px;
+  max-width: 720px;
   margin: auto;
-  background-color: #111;
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+  background: #111;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+  border: 1px solid #333;
 }
 
 h1, h2, h3 {
+  color: #fff;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
 }
 
 .section {
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
 }
 
 input, select, button {
-  display: block;
   width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: none;
-  font-size: 16px;
+  padding: 12px;
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background-color: #000;
+  color: #fff;
+  transition: all 0.2s;
 }
 
-input, select {
-  background-color: #222;
-  color: #fff;
+input:focus, select:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 4px rgba(74, 144, 226, 0.5);
+}
+
+input.error, select.error {
+  border-color: #e74c3c;
+  background-color: #220000;
 }
 
 button {
-  background-color: #fff;
-  color: #000;
-  font-weight: bold;
+  background-color: #4a90e2;
+  color: #fff;
+  border: none;
   cursor: pointer;
+  font-weight: bold;
 }
 
-button:hover {
-  background-color: #ccc;
+button:hover:not(:disabled) {
+  background-color: #357ab8;
+}
+
+button:disabled {
+  background-color: #333;
+  cursor: not-allowed;
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .result-area {
   margin-top: 10px;
-  text-align: center;
-  font-size: 18px;
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+/* ✅ Toasts */
+.toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  background: #222;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  z-index: 9999;
+  font-size: 0.95rem;
+  border: 1px solid #444;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-success {
+  background: #1f5;
+  color: #000;
+}
+
+.toast-error {
+  background: #e74c3c;
+}
+
+.toast-info {
+  background: #3498db;
 }
