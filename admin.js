@@ -92,8 +92,18 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(res => res.json())
       .then(data => {
         console.log('🔁 查詢回應：', data);
+
+        // ✅ 如果是多筆同名結果（新增支援）
+        if (Array.isArray(data.members)) {
+          const list = data.members.map(member =>
+            `姓名：${member.name}，電話：${member.phone}，LINE ID：${member.lineID}，處室：${member.dept}，點數：${member.point}`
+          ).join('\n');
+          alert('🔍 查到多筆同名會員：\n' + list);
+          adjustMsg.textContent = '請輸入更明確的條件查詢（如 LINE ID 或電話）';
+          return;
+        }
+
         if (data.status === 'found') {
-          // ✅ 修正：數字欄位轉字串後再 trim()
           currentMember = {
             name: String(data.name || '').trim() || '-',
             phone: String(data.phone || '').trim() || '-',
