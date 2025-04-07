@@ -40,9 +40,9 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(text => {
         let json;
         try {
-          json = text.trim().startsWith('callback(') ?
-            JSON.parse(text.replace(/^callback\(/, '').replace(/\);$/, '')) :
-            JSON.parse(text);
+          json = text.trim().startsWith('callback(')
+            ? JSON.parse(text.replace(/^callback\(/, '').replace(/\);$/, ''))
+            : JSON.parse(text);
 
           if (json.status === 'duplicate') {
             alert('🟡 有相同姓名與電話的會員！');
@@ -55,7 +55,9 @@ document.addEventListener('DOMContentLoaded', function () {
             addMsg.textContent = json.message;
           } else if (json.status === 'success') {
             addMsg.textContent = '會員新增成功！';
-            ['newName', 'newPhone', 'newLineID', 'newDept', 'newInitialPoints'].forEach(id => document.getElementById(id).value = '');
+            ['newName', 'newPhone', 'newLineID', 'newDept', 'newInitialPoints'].forEach(id =>
+              document.getElementById(id).value = ''
+            );
           } else {
             addMsg.textContent = json.message || '新增失敗';
           }
@@ -69,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
         addMsg.textContent = '新增失敗';
       });
   }
+
   document.getElementById('addMemberBtn').addEventListener('click', () => submitMember(false));
 
   // === 點數調整功能 ===
@@ -85,8 +88,8 @@ document.addEventListener('DOMContentLoaded', function () {
       adjustMsg.textContent = '請輸入會員姓名、電話或 LINE ID';
       return;
     }
-    adjustMsg.textContent = '查詢中...';
 
+    adjustMsg.textContent = '查詢中...';
     fetch(`${adjustPointsUrl}?query=${encodeURIComponent(keyword)}`)
       .then(res => res.json())
       .then(data => {
@@ -106,6 +109,10 @@ document.addEventListener('DOMContentLoaded', function () {
           document.getElementById('memberInfo').classList.add('hidden');
           document.getElementById('adjustForm').classList.add('hidden');
         }
+      })
+      .catch(err => {
+        console.error('查詢失敗', err);
+        adjustMsg.textContent = '查詢發生錯誤';
       });
   });
 
@@ -118,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const adjustAmount = Number(adjustAmountRaw);
 
-    // ✅ 僅檢查輸入欄位，不再檢查 currentMember 資料完整性
+    // ✅ 僅檢查表單欄位，不檢查 currentMember 內容
     if (!adjustType || isNaN(adjustAmount) || adjustAmount <= 0 || !adjustReason || !adjustCashier) {
       adjustMsg.textContent = '請完整填寫「儲值 / 扣款內容」欄位';
       return;
@@ -146,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       })
       .catch(err => {
-        console.error(err);
+        console.error('❌ 請求失敗', err);
         adjustMsg.textContent = '❌ 請求失敗，請稍後再試';
       });
   });
