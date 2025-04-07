@@ -10,8 +10,9 @@
   <div class="container">
     <h1>ZCafe 後台管理系統</h1>
 
-    <div class="section">
-      <label for="actionSelect"><strong>請選擇操作：</strong></label>
+    <!-- 功能選擇區塊 -->
+    <div id="actionSelector" class="section">
+      <h2>請選擇操作</h2>
       <select id="actionSelect">
         <option value="none">請選擇...</option>
         <option value="addMember">新增會員</option>
@@ -19,6 +20,7 @@
       </select>
     </div>
 
+    <!-- 新增會員區塊 -->
     <div id="addMemberSection" class="section hidden">
       <h2>新增會員</h2>
       <input type="text" id="newName" placeholder="會員姓名" />
@@ -32,11 +34,13 @@
 
     <hr />
 
+    <!-- 會員點數調整區塊 -->
     <div id="adjustPointsSection" class="section hidden">
       <h2>會員點數調整</h2>
       <input type="text" id="searchInput" placeholder="輸入姓名、電話或 LINE ID" />
       <button id="searchMemberBtn">查詢會員</button>
 
+      <!-- 查詢結果顯示 -->
       <div id="memberInfo" class="section hidden">
         <h3>會員資料</h3>
         <p><strong>姓名：</strong><span id="adjustName"></span></p>
@@ -46,6 +50,7 @@
         <p><strong>目前點數：</strong><span id="adjustPoint"></span></p>
       </div>
 
+      <!-- 點數調整操作 -->
       <div id="adjustForm" class="section hidden">
         <label for="adjustType">選擇操作：</label>
         <select id="adjustType">
@@ -53,14 +58,15 @@
           <option value="deduct">扣款</option>
         </select>
         <input type="number" id="adjustAmount" placeholder="金額" />
-        <input type="text" id="adjustReason" placeholder="儲值/扣款內容" />
+        <input type="text" id="adjustReason" placeholder="結帳內容" />
         <input type="text" id="adjustCashier" placeholder="結帳人" />
-        <button id="confirmAdjustBtn">確認新增</button>
+        <button id="confirmAdjustBtn">確認操作</button>
       </div>
 
       <div id="adjustMsg" class="result-area"></div>
     </div>
+
   </div>
-  <script src="admin.js?v=3"></script>
+  <script src="admin.js"></script>
 </body>
 </html>
