@@ -55,12 +55,13 @@ document.addEventListener('DOMContentLoaded', function () {
           } else {
             json = JSON.parse(text);
           }
+
           console.log('✅ JSON 解析結果:', json);
 
           if (json.status === 'duplicate') {
-            const confirmAdd = confirm(json.message || '已有相同姓名與電話的會員，是否仍要新增？');
+            const confirmAdd = confirm(json.message || '已有相同會員，是否仍要新增？');
             if (confirmAdd) {
-              submitMember(true);
+              submitMember(true); // 強制新增
             } else {
               addMsg.textContent = '已取消新增';
             }
