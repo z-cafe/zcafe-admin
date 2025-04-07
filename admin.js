@@ -93,11 +93,18 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(data => {
         console.log('🔁 查詢回應：', data);
         if (data.status === 'found') {
-          currentMember = data;
-          document.getElementById('adjustName').textContent = data.name || '';
-          document.getElementById('adjustPhone').textContent = data.phone || '';
-          document.getElementById('adjustLineID').textContent = data.lineID || '';
-          document.getElementById('adjustDept').textContent = data.dept || '';
+          // ✅ 避免包含 status，確保送出正確欄位
+          currentMember = {
+            name: data.name || '-',
+            phone: data.phone || '-',
+            lineID: data.lineID || '-',
+            dept: data.dept || '-'
+          };
+
+          document.getElementById('adjustName').textContent = currentMember.name;
+          document.getElementById('adjustPhone').textContent = currentMember.phone;
+          document.getElementById('adjustLineID').textContent = currentMember.lineID;
+          document.getElementById('adjustDept').textContent = currentMember.dept;
           document.getElementById('adjustPoint').textContent = data.point || '';
           document.getElementById('memberInfo').classList.remove('hidden');
           document.getElementById('adjustForm').classList.remove('hidden');
