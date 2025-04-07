@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
+  console.log('✅ admin.js 正確載入！');
+
   const memberDataUrl = 'https://script.google.com/macros/s/AKfycbxz_MRdTBhr39nt9vPKOgoQ9D-P8xlNIVJrcehKpp763AlqzI8hHVb5iBtOx1nj7ZC1/exec';
   const adjustPointsUrl = 'https://script.google.com/macros/s/待會會換成你點數調整的URL/exec';
 
-  // 功能選單切換
   const actionSelect = document.getElementById('actionSelect');
   actionSelect.addEventListener('change', function () {
     document.getElementById('addMemberSection').classList.add('hidden');
@@ -15,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // 新增會員功能
   const addMemberBtn = document.getElementById('addMemberBtn');
   addMemberBtn.addEventListener('click', function submitMember(forced = false) {
     const name = document.getElementById('newName').value.trim();
@@ -48,18 +48,19 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(res => res.text())
       .then(text => {
         let json;
+        console.log('🧾 原始回傳內容：', text);
         try {
-          // 自動判斷 JSON / JSONP 格式
           if (text.trim().startsWith('callback(')) {
             json = JSON.parse(text.replace(/^callback\(/, '').replace(/\);$/, ''));
           } else {
             json = JSON.parse(text);
           }
+          console.log('✅ JSON 解析結果:', json);
 
           if (json.status === 'duplicate') {
             const confirmAdd = confirm(json.message || '已有相同姓名與電話的會員，是否仍要新增？');
             if (confirmAdd) {
-              submitMember(true); // 強制新增
+              submitMember(true);
             } else {
               addMsg.textContent = '已取消新增';
             }
@@ -76,12 +77,12 @@ document.addEventListener('DOMContentLoaded', function () {
             addMsg.textContent = json.message || '新增失敗';
           }
         } catch (e) {
-          console.error('解析錯誤:', text);
+          console.error('❌ JSON 解析失敗:', text);
           addMsg.textContent = '無法解析伺服器資料';
         }
       })
       .catch(err => {
-        console.error(err);
+        console.error('❌ 網路錯誤:', err);
         addMsg.textContent = '新增失敗，請稍後再試';
       });
   });
