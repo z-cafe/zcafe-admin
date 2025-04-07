@@ -1,9 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // 你的 API URL（來自你剛剛部署）
   const memberDataUrl = 'https://script.google.com/macros/s/AKfycbxz_MRdTBhr39nt9vPKOgoQ9D-P8xlNIVJrcehKpp763AlqzI8hHVb5iBtOx1nj7ZC1/exec';
-  const adjustPointsUrl = 'https://script.google.com/macros/s/待會會換成你點數調整的URL/exec'; // 先保留
+  const adjustPointsUrl = 'https://script.google.com/macros/s/待會會換成你點數調整的URL/exec';
 
-  // 功能選擇下拉選單事件
+  // 功能選單切換
   const actionSelect = document.getElementById('actionSelect');
   actionSelect.addEventListener('change', function () {
     document.getElementById('addMemberSection').classList.add('hidden');
@@ -16,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // -----------------------
   // 新增會員功能
   const addMemberBtn = document.getElementById('addMemberBtn');
   addMemberBtn.addEventListener('click', function submitMember(forced = false) {
@@ -49,13 +47,19 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch(`${memberDataUrl}?${params.toString()}`)
       .then(res => res.text())
       .then(text => {
+        let json;
         try {
-          const json = JSON.parse(text.replace(/^callback\(/, '').replace(/\);$/, ''));
+          // 自動判斷 JSON / JSONP 格式
+          if (text.trim().startsWith('callback(')) {
+            json = JSON.parse(text.replace(/^callback\(/, '').replace(/\);$/, ''));
+          } else {
+            json = JSON.parse(text);
+          }
 
           if (json.status === 'duplicate') {
-            const confirmAdd = confirm(json.message || '已有相同資料，是否繼續新增？');
+            const confirmAdd = confirm(json.message || '已有相同姓名與電話的會員，是否仍要新增？');
             if (confirmAdd) {
-              submitMember(true); // 再送出一次，強制新增
+              submitMember(true); // 強制新增
             } else {
               addMsg.textContent = '已取消新增';
             }
@@ -63,7 +67,6 @@ document.addEventListener('DOMContentLoaded', function () {
             addMsg.textContent = json.message;
           } else if (json.status === 'success') {
             addMsg.textContent = '會員新增成功！';
-            // 清空欄位
             document.getElementById('newName').value = '';
             document.getElementById('newPhone').value = '';
             document.getElementById('newLineID').value = '';
@@ -74,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         } catch (e) {
           console.error('解析錯誤:', text);
-          addMsg.textContent = '無法解析伺服器回傳資料';
+          addMsg.textContent = '無法解析伺服器資料';
         }
       })
       .catch(err => {
