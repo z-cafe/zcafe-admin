@@ -93,19 +93,19 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(data => {
         console.log('🔁 查詢回應：', data);
         if (data.status === 'found') {
-          // ✅ 正確過濾空字串並補 '-'
+          // ✅ 最安全做法：清除 status 並補空值欄位為 '-'
           currentMember = {
-            name: data.name && data.name.trim() !== '' ? data.name : '-',
-            phone: data.phone && data.phone.trim() !== '' ? data.phone : '-',
-            lineID: data.lineID && data.lineID.trim() !== '' ? data.lineID : '-',
-            dept: data.dept && data.dept.trim() !== '' ? data.dept : '-'
+            name: (data.name || '').trim() || '-',
+            phone: (data.phone || '').trim() || '-',
+            lineID: (data.lineID || '').trim() || '-',
+            dept: (data.dept || '').trim() || '-'
           };
 
           document.getElementById('adjustName').textContent = currentMember.name;
           document.getElementById('adjustPhone').textContent = currentMember.phone;
           document.getElementById('adjustLineID').textContent = currentMember.lineID;
           document.getElementById('adjustDept').textContent = currentMember.dept;
-          document.getElementById('adjustPoint').textContent = data.point || '';
+          document.getElementById('adjustPoint').textContent = (data.point || '').trim();
           document.getElementById('memberInfo').classList.remove('hidden');
           document.getElementById('adjustForm').classList.remove('hidden');
           adjustMsg.textContent = '';
