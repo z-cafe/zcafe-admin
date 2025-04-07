@@ -77,6 +77,8 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentMember = null;
 
   searchBtn.addEventListener('click', () => {
+    console.log('🔍 查詢會員按下！');
+
     const keyword = document.getElementById('searchInput').value.trim();
     const adjustMsg = document.getElementById('adjustMsg');
     if (!keyword) {
@@ -84,9 +86,11 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
     adjustMsg.textContent = '查詢中...';
+
     fetch(`${adjustPointsUrl}?query=${encodeURIComponent(keyword)}`)
       .then(res => res.json())
       .then(data => {
+        console.log('🔁 查詢回應：', data);
         if (data.status === 'found') {
           currentMember = data;
           document.getElementById('adjustName').textContent = data.name;
@@ -94,10 +98,12 @@ document.addEventListener('DOMContentLoaded', function () {
           document.getElementById('adjustLineID').textContent = data.lineID;
           document.getElementById('adjustDept').textContent = data.dept;
           document.getElementById('adjustPoint').textContent = data.point;
+          document.getElementById('memberInfo').classList.remove('hidden');
           document.getElementById('adjustForm').classList.remove('hidden');
           adjustMsg.textContent = '';
         } else {
           adjustMsg.textContent = data.message || '查無會員';
+          document.getElementById('memberInfo').classList.add('hidden');
           document.getElementById('adjustForm').classList.add('hidden');
         }
       });
