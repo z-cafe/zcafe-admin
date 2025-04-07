@@ -111,12 +111,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   confirmAdjustBtn.addEventListener('click', () => {
     const adjustType = document.getElementById('adjustType').value;
-    const adjustAmount = parseInt(document.getElementById('adjustAmount').value.trim(), 10);
+    const adjustAmount = Number(document.getElementById('adjustAmount').value);
     const adjustReason = document.getElementById('adjustReason').value.trim();
     const adjustCashier = document.getElementById('adjustCashier').value.trim();
     const adjustMsg = document.getElementById('adjustMsg');
 
-    if (!currentMember || !adjustType || isNaN(adjustAmount) || !adjustReason || !adjustCashier) {
+    if (!currentMember || !adjustType || isNaN(adjustAmount) || adjustAmount <= 0 || !adjustReason || !adjustCashier) {
       adjustMsg.textContent = '請完整填寫所有欄位';
       return;
     }
