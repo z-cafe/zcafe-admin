@@ -1,4 +1,4 @@
-/* admin.css - Z-Café 極簡黑白風格 */
+/* admin.css - Z-Café 黑白風格 + RWD + Spinner */
 
 body {
   font-family: 'Helvetica Neue', sans-serif;
@@ -15,6 +15,22 @@ body {
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
   border: 1px solid #333;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+  .container {
+    padding: 1.5rem;
+  }
+  h1, h2, h3 {
+    font-size: 1.25rem;
+  }
+  input, select, button {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
 }
 
 h1, h2, h3 {
@@ -110,4 +126,24 @@ button:disabled {
 
 .toast-info {
   background: #3498db;
+}
+
+/* ⏳ Spinner loading */
+.spinner {
+  border: 3px solid #333;
+  border-top: 3px solid #4a90e2;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 0.7s linear infinite;
+  margin: 0 auto;
+  display: none;
+}
+
+.spinner.show {
+  display: block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
