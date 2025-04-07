@@ -1,53 +1,73 @@
-<!-- 會員點數調整區塊 -->
-<div id="adjustPointsSection" class="hidden" style="margin-top: 2em;">
-  <h2>會員點數調整</h2>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZCafe 後台管理系統</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>ZCafe 後台管理系統</h1>
 
-  <!-- 查詢欄位 -->
-  <div>
-    <label for="searchInput">輸入會員姓名、電話或 LINE ID：</label><br />
-    <input type="text" id="searchInput" placeholder="搜尋關鍵字" />
-    <button id="searchMemberBtn">查詢會員</button>
-  </div>
-
-  <!-- 查詢結果顯示 -->
-  <div id="adjustForm" class="hidden" style="margin-top: 1em; border: 1px solid #ccc; padding: 1em;">
-    <h3>查詢結果</h3>
-    <p>姓名：<span id="adjustName"></span></p>
-    <p>電話：<span id="adjustPhone"></span></p>
-    <p>LINE ID：<span id="adjustLineID"></span></p>
-    <p>學校處室：<span id="adjustDept"></span></p>
-    <p>目前點數：<span id="adjustPoint"></span></p>
-
-    <!-- 點數調整輸入 -->
-    <hr />
-    <div style="margin-top: 1em;">
-      <label for="adjustType">動作：</label>
-      <select id="adjustType">
-        <option value="add">儲值</option>
-        <option value="deduct">扣款</option>
+    <!-- 功能選擇區塊 -->
+    <div id="actionSelector" class="section">
+      <h2>請選擇操作</h2>
+      <select id="actionSelect">
+        <option value="none">請選擇...</option>
+        <option value="addMember">新增會員</option>
+        <option value="adjustPoints">會員點數調整</option>
       </select>
     </div>
 
-    <div style="margin-top: 0.5em;">
-      <label for="adjustAmount">金額：</label>
-      <input type="number" id="adjustAmount" min="1" />
+    <!-- 新增會員區塊 -->
+    <div id="addMemberSection" class="section hidden">
+      <h2>新增會員</h2>
+      <input type="text" id="newName" placeholder="會員姓名" />
+      <input type="text" id="newPhone" placeholder="會員電話" />
+      <input type="text" id="newLineID" placeholder="會員 LINE ID" />
+      <input type="text" id="newDept" placeholder="學校處室編號" />
+      <input type="number" id="newInitialPoints" placeholder="初始點數" />
+      <button id="addMemberBtn">加入會員</button>
+      <div id="addMemberMsg" class="result-area"></div>
     </div>
 
-    <div style="margin-top: 0.5em;">
-      <label for="adjustReason">用途 / 備註：</label>
-      <input type="text" id="adjustReason" placeholder="例如：購買飲料" />
-    </div>
+    <hr />
 
-    <div style="margin-top: 0.5em;">
-      <label for="adjustCashier">結帳人：</label>
-      <input type="text" id="adjustCashier" />
-    </div>
+    <!-- 會員點數調整區塊 -->
+    <div id="adjustPointsSection" class="section hidden">
+      <h2>會員點數調整</h2>
 
-    <div style="margin-top: 1em;">
-      <button id="confirmAdjustBtn">確認新增</button>
+      <!-- 查詢會員資訊 -->
+      <input type="text" id="searchInput" placeholder="輸入姓名、電話或 LINE ID" />
+      <button id="searchMemberBtn">查詢會員</button>
+
+      <!-- 查詢結果顯示 -->
+      <div id="memberInfo" class="section hidden">
+        <h3>會員資料</h3>
+        <p><strong>姓名：</strong><span id="adjustName"></span></p>
+        <p><strong>電話：</strong><span id="adjustPhone"></span></p>
+        <p><strong>LINE ID：</strong><span id="adjustLineID"></span></p>
+        <p><strong>學校處室編號：</strong><span id="adjustDept"></span></p>
+        <p><strong>目前點數：</strong><span id="adjustPoint"></span></p>
+      </div>
+
+      <!-- 點數調整操作 -->
+      <div id="adjustForm" class="section hidden">
+        <label for="adjustType">選擇操作：</label>
+        <select id="adjustType">
+          <option value="add">儲值</option>
+          <option value="deduct">扣款</option>
+        </select>
+        <input type="number" id="adjustAmount" placeholder="金額" />
+        <input type="text" id="adjustReason" placeholder="結帳內容 / 備註" />
+        <input type="text" id="adjustCashier" placeholder="結帳人" />
+        <button id="confirmAdjustBtn">確認新增</button>
+      </div>
+
+      <div id="adjustMsg" class="result-area"></div>
     </div>
   </div>
-
-  <!-- 顯示處理訊息 -->
-  <p id="adjustMsg" style="color: green; margin-top: 1em;"></p>
-</div>
+  <script src="admin.js"></script>
+</body>
+</html>
