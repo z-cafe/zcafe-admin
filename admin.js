@@ -111,14 +111,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   confirmAdjustBtn.addEventListener('click', () => {
     const adjustType = document.getElementById('adjustType').value;
-    const adjustAmount = Number(document.getElementById('adjustAmount').value);
+    const adjustAmountRaw = document.getElementById('adjustAmount').value.trim();
     const adjustReason = document.getElementById('adjustReason').value.trim();
     const adjustCashier = document.getElementById('adjustCashier').value.trim();
     const adjustMsg = document.getElementById('adjustMsg');
 
-    // ✅ 僅檢查使用者輸入的表單欄位，不再檢查會員資料是否完整
+    const adjustAmount = Number(adjustAmountRaw);
+
+    // ✅ 僅檢查輸入欄位，不再檢查 currentMember 資料完整性
     if (!adjustType || isNaN(adjustAmount) || adjustAmount <= 0 || !adjustReason || !adjustCashier) {
-      adjustMsg.textContent = '請完整填寫金額、內容、出資人等欄位';
+      adjustMsg.textContent = '請完整填寫「儲值 / 扣款內容」欄位';
       return;
     }
 
@@ -137,15 +139,15 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success') {
-          adjustMsg.textContent = `點數調整成功，新餘額：${data.newPoint}`;
+          adjustMsg.textContent = `✅ 點數調整成功，新餘額：${data.newPoint}`;
           document.getElementById('adjustPoint').textContent = data.newPoint;
         } else {
-          adjustMsg.textContent = data.message || '調整失敗';
+          adjustMsg.textContent = data.message || '❌ 調整失敗';
         }
       })
       .catch(err => {
         console.error(err);
-        adjustMsg.textContent = '請求失敗，請稍後再試';
+        adjustMsg.textContent = '❌ 請求失敗，請稍後再試';
       });
   });
 });
