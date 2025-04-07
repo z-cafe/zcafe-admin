@@ -57,8 +57,8 @@ input, select, button {
 
 input:focus, select:focus {
   outline: none;
-  border-color: #4a90e2;
-  box-shadow: 0 0 4px rgba(74, 144, 226, 0.5);
+  border-color: #888;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
 }
 
 input.error, select.error {
@@ -67,19 +67,21 @@ input.error, select.error {
 }
 
 button {
-  background-color: #4a90e2;
+  background-color: #222;
   color: #fff;
-  border: none;
+  border: 1px solid #666;
   cursor: pointer;
   font-weight: bold;
 }
 
 button:hover:not(:disabled) {
-  background-color: #357ab8;
+  background-color: #444;
+  border-color: #888;
 }
 
 button:disabled {
   background-color: #333;
+  border-color: #555;
   cursor: not-allowed;
 }
 
@@ -131,7 +133,7 @@ button:disabled {
 /* ⏳ Spinner loading */
 .spinner {
   border: 3px solid #333;
-  border-top: 3px solid #4a90e2;
+  border-top: 3px solid #999;
   border-radius: 50%;
   width: 30px;
   height: 30px;
@@ -147,3 +149,4 @@ button:disabled {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
