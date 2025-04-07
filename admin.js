@@ -154,9 +154,9 @@ document.addEventListener('DOMContentLoaded', function () {
   function showMember(m) {
     currentMember = m;
     document.getElementById('adjustName').textContent = m.name;
-    document.getElementById('adjustPhone').textContent = m.phone;
-    document.getElementById('adjustLineID').textContent = m.lineID;
-    document.getElementById('adjustDept').textContent = m.dept;
+    document.getElementById('adjustPhone').textContent = m.phone || '-';
+    document.getElementById('adjustLineID').textContent = m.lineID || '-';
+    document.getElementById('adjustDept').textContent = m.dept || '-';
     document.getElementById('adjustPoint').textContent = m.point;
     document.getElementById('memberInfo').classList.remove('hidden');
     document.getElementById('adjustForm').classList.remove('hidden');
@@ -178,9 +178,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const params = new URLSearchParams({
       action: type,
       name: currentMember.name,
-      phone: currentMember.phone,
-      lineID: currentMember.lineID,
-      dept: currentMember.dept,
+      phone: currentMember.phone || '-',
+      lineID: currentMember.lineID || '-',
+      dept: currentMember.dept || '-',
       amount,
       reason,
       cashier
