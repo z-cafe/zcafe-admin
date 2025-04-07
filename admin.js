@@ -137,10 +137,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const params = new URLSearchParams({
       action: adjustType,
-      name: currentMember?.name || '',
-      phone: currentMember?.phone || '',
-      lineID: currentMember?.lineID || '',
-      dept: currentMember?.dept || '',
+      name: currentMember?.name || '-',
+      phone: currentMember?.phone || '-',
+      lineID: currentMember?.lineID || '-',
+      dept: currentMember?.dept || '-',
       amount: adjustAmount,
       reason: adjustReason,
       cashier: adjustCashier
