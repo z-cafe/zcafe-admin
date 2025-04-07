@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
   console.log('✅ admin.js 正確載入！');
 
   const memberDataUrl = 'https://script.google.com/macros/s/AKfycbxz_MRdTBhr39nt9vPKOgoQ9D-P8xlNIVJrcehKpp763AlqzI8hHVb5iBtOx1nj7ZC1/exec';
+  const adjustPointsUrl = 'https://script.google.com/macros/s/AKfycbwxXd4ZRvBD--eOMEz3S-etWTWX7gGTmF3tyPk6fa8Eo7s4X0sdiJ-4kwnTehZK3KaZ/exec';
 
   const actionSelect = document.getElementById('actionSelect');
   actionSelect.addEventListener('change', function () {
@@ -15,13 +16,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // === 新增會員功能 ===
   function submitMember(forced = false) {
-    console.log('▶️ 點了加入會員');
-
     const name = document.getElementById('newName').value.trim();
     let phone = document.getElementById('newPhone').value.trim();
-    phone = phone.replace(/^0/, ''); // ✅ 去掉開頭的 0
-
+    phone = phone.replace(/^0/, '');
     const lineID = document.getElementById('newLineID').value.trim();
     const dept = document.getElementById('newDept').value.trim();
     const initialPoints = document.getElementById('newInitialPoints').value.trim();
@@ -33,75 +32,113 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     addMsg.textContent = '新增會員中...';
-    console.log('📦 傳送參數：', { name, phone, lineID, dept, point: initialPoints, forced });
-
-    const params = new URLSearchParams({
-      name,
-      phone,
-      lineID,
-      dept,
-      point: initialPoints
-    });
-
-    if (forced) {
-      params.append('force', 'true');
-    }
+    const params = new URLSearchParams({ name, phone, lineID, dept, point: initialPoints });
+    if (forced) params.append('force', 'true');
 
     fetch(`${memberDataUrl}?${params.toString()}`)
       .then(res => res.text())
       .then(text => {
-        console.log('🧾 原始回傳內容：', text);
         let json;
         try {
-          if (text.trim().startsWith('callback(')) {
-            json = JSON.parse(text.replace(/^callback\(/, '').replace(/\);$/, ''));
-          } else {
-            json = JSON.parse(text);
-          }
-
-          console.log('✅ JSON 解析結果:', json);
+          json = text.trim().startsWith('callback(') ?
+            JSON.parse(text.replace(/^callback\(/, '').replace(/\);$/, '')) :
+            JSON.parse(text);
 
           if (json.status === 'duplicate') {
-            console.log('⚠️ 進入 duplicate 判斷區塊！');
             alert('🟡 有相同姓名與電話的會員！');
-
-            const confirmAdd = confirm(json.message || '已有相同會員，是否仍要新增？');
-            if (confirmAdd) {
-              console.log('✔️ 使用者選擇強制新增');
+            if (confirm(json.message || '已有相同會員，是否仍要新增？')) {
               submitMember(true);
             } else {
-              console.log('🚫 使用者取消新增');
               addMsg.textContent = '已取消新增';
             }
           } else if (json.status === 'exists') {
-            console.log('🛑 LINE ID 重複');
             addMsg.textContent = json.message;
           } else if (json.status === 'success') {
-            console.log('✅ 新增成功！');
             addMsg.textContent = '會員新增成功！';
-            document.getElementById('newName').value = '';
-            document.getElementById('newPhone').value = '';
-            document.getElementById('newLineID').value = '';
-            document.getElementById('newDept').value = '';
-            document.getElementById('newInitialPoints').value = '';
+            ['newName', 'newPhone', 'newLineID', 'newDept', 'newInitialPoints'].forEach(id => document.getElementById(id).value = '');
           } else {
-            console.log('❓ 未知狀態：', json.status);
             addMsg.textContent = json.message || '新增失敗';
           }
         } catch (e) {
-          console.error('❌ JSON 解析失敗:', text);
-          addMsg.textContent = '無法解析伺服器資料';
+          console.error('JSON 解析錯誤', text);
+          addMsg.textContent = '無法解析伺服器回應';
         }
       })
       .catch(err => {
-        console.error('❌ 網路錯誤:', err);
-        addMsg.textContent = '新增失敗，請稍後再試';
+        console.error('錯誤', err);
+        addMsg.textContent = '新增失敗';
       });
   }
+  document.getElementById('addMemberBtn').addEventListener('click', () => submitMember(false));
 
-  // 綁定點擊事件
-  const addMemberBtn = document.getElementById('addMemberBtn');
-  addMemberBtn.addEventListener('click', function () {
-    submitMember(false);
+  // === 點數調整功能 ===
+  const searchBtn = document.getElementById('searchMemberBtn');
+  const confirmAdjustBtn = document.getElementById('confirmAdjustBtn');
+  let currentMember = null;
+
+  searchBtn.addEventListener('click', () => {
+    const keyword = document.getElementById('searchInput').value.trim();
+    const adjustMsg = document.getElementById('adjustMsg');
+    if (!keyword) {
+      adjustMsg.textContent = '請輸入會員姓名、電話或 LINE ID';
+      return;
+    }
+    adjustMsg.textContent = '查詢中...';
+    fetch(`${adjustPointsUrl}?query=${encodeURIComponent(keyword)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'found') {
+          currentMember = data;
+          document.getElementById('adjustName').textContent = data.name;
+          document.getElementById('adjustPhone').textContent = data.phone;
+          document.getElementById('adjustLineID').textContent = data.lineID;
+          document.getElementById('adjustDept').textContent = data.dept;
+          document.getElementById('adjustPoint').textContent = data.point;
+          document.getElementById('adjustForm').classList.remove('hidden');
+          adjustMsg.textContent = '';
+        } else {
+          adjustMsg.textContent = data.message || '查無會員';
+          document.getElementById('adjustForm').classList.add('hidden');
+        }
+      });
+  });
+
+  confirmAdjustBtn.addEventListener('click', () => {
+    const adjustType = document.getElementById('adjustType').value;
+    const adjustAmount = parseInt(document.getElementById('adjustAmount').value.trim(), 10);
+    const adjustReason = document.getElementById('adjustReason').value.trim();
+    const adjustCashier = document.getElementById('adjustCashier').value.trim();
+    const adjustMsg = document.getElementById('adjustMsg');
+
+    if (!currentMember || !adjustType || isNaN(adjustAmount) || !adjustReason || !adjustCashier) {
+      adjustMsg.textContent = '請完整填寫所有欄位';
+      return;
+    }
+
+    const params = new URLSearchParams({
+      action: adjustType,
+      name: currentMember.name,
+      phone: currentMember.phone,
+      lineID: currentMember.lineID,
+      dept: currentMember.dept,
+      amount: adjustAmount,
+      reason: adjustReason,
+      cashier: adjustCashier
+    });
+
+    fetch(`${adjustPointsUrl}?${params.toString()}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          adjustMsg.textContent = `點數調整成功，新餘額：${data.newPoint}`;
+          document.getElementById('adjustPoint').textContent = data.newPoint;
+        } else {
+          adjustMsg.textContent = data.message || '調整失敗';
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        adjustMsg.textContent = '請求失敗，請稍後再試';
+      });
   });
 });
