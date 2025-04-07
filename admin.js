@@ -19,7 +19,9 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('▶️ 點了加入會員');
 
     const name = document.getElementById('newName').value.trim();
-    const phone = document.getElementById('newPhone').value.trim();
+    let phone = document.getElementById('newPhone').value.trim();
+    phone = phone.replace(/^0/, ''); // ✅ 去掉開頭的 0
+
     const lineID = document.getElementById('newLineID').value.trim();
     const dept = document.getElementById('newDept').value.trim();
     const initialPoints = document.getElementById('newInitialPoints').value.trim();
@@ -97,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
-  // 綁定點擊事件：預設 forced = false
+  // 綁定點擊事件
   const addMemberBtn = document.getElementById('addMemberBtn');
   addMemberBtn.addEventListener('click', function () {
     submitMember(false);
