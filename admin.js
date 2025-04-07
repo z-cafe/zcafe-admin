@@ -16,6 +16,21 @@ document.addEventListener('DOMContentLoaded', function () {
   const memberDataUrl = 'https://script.google.com/macros/s/AKfycbxz_MRdTBhr39nt9vPKOgoQ9D-P8xlNIVJrcehKpp763AlqzI8hHVb5iBtOx1nj7ZC1/exec';
   const adjustPointsUrl = 'https://script.google.com/macros/s/AKfycbwxXd4ZRvBD--eOMEz3S-etWTWX7gGTmF3tyPk6fa8Eo7s4X0sdiJ-4kwnTehZK3KaZ/exec';
 
+  const actionSelect = document.getElementById('actionSelect');
+  const addMemberSection = document.getElementById('addMemberSection');
+  const adjustPointsSection = document.getElementById('adjustPointsSection');
+
+  actionSelect.addEventListener('change', function () {
+    addMemberSection.classList.add('hidden');
+    adjustPointsSection.classList.add('hidden');
+
+    if (this.value === 'addMember') {
+      addMemberSection.classList.remove('hidden');
+    } else if (this.value === 'adjustPoints') {
+      adjustPointsSection.classList.remove('hidden');
+    }
+  });
+
   const addBtn = document.getElementById('addMemberBtn');
   const searchBtn = document.getElementById('searchMemberBtn');
   const confirmBtn = document.getElementById('confirmAdjustBtn');
