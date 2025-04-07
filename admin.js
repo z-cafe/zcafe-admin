@@ -93,12 +93,12 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(data => {
         console.log('🔁 查詢回應：', data);
         if (data.status === 'found') {
-          // ✅ 避免包含 status，確保送出正確欄位
+          // ✅ 正確過濾空字串並補 '-'
           currentMember = {
-            name: data.name || '-',
-            phone: data.phone || '-',
-            lineID: data.lineID || '-',
-            dept: data.dept || '-'
+            name: data.name && data.name.trim() !== '' ? data.name : '-',
+            phone: data.phone && data.phone.trim() !== '' ? data.phone : '-',
+            lineID: data.lineID && data.lineID.trim() !== '' ? data.lineID : '-',
+            dept: data.dept && data.dept.trim() !== '' ? data.dept : '-'
           };
 
           document.getElementById('adjustName').textContent = currentMember.name;
