@@ -1,6 +1,5 @@
 // admin.js
 
-// ✅ Toast 訊息系統
 function showToast(message, type = 'info') {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
@@ -205,3 +204,4 @@ document.addEventListener('DOMContentLoaded', function () {
       .finally(() => enableBtn(confirmBtn));
   });
 });
+
