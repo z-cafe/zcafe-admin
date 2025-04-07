@@ -116,17 +116,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const adjustCashier = document.getElementById('adjustCashier').value.trim();
     const adjustMsg = document.getElementById('adjustMsg');
 
-    if (!currentMember || !adjustType || isNaN(adjustAmount) || adjustAmount <= 0 || !adjustReason || !adjustCashier) {
-      adjustMsg.textContent = '請完整填寫所有欄位';
+    // ✅ 只檢查表單輸入欄位，不再驗證 currentMember 的內容完整性
+    if (!adjustType || isNaN(adjustAmount) || adjustAmount <= 0 || !adjustReason || !adjustCashier) {
+      adjustMsg.textContent = '請完整填寫下方所有欄位';
       return;
     }
 
     const params = new URLSearchParams({
       action: adjustType,
-      name: currentMember.name,
-      phone: currentMember.phone,
-      lineID: currentMember.lineID,
-      dept: currentMember.dept,
+      name: currentMember.name || '',
+      phone: currentMember.phone || '',
+      lineID: currentMember.lineID || '',
+      dept: currentMember.dept || '',
       amount: adjustAmount,
       reason: adjustReason,
       cashier: adjustCashier
