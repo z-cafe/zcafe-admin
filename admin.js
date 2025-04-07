@@ -96,11 +96,11 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('🔁 查詢回應：', data);
         if (data.status === 'found') {
           currentMember = data;
-          document.getElementById('adjustName').textContent = data.name;
-          document.getElementById('adjustPhone').textContent = data.phone;
-          document.getElementById('adjustLineID').textContent = data.lineID;
-          document.getElementById('adjustDept').textContent = data.dept;
-          document.getElementById('adjustPoint').textContent = data.point;
+          document.getElementById('adjustName').textContent = data.name || '';
+          document.getElementById('adjustPhone').textContent = data.phone || '';
+          document.getElementById('adjustLineID').textContent = data.lineID || '';
+          document.getElementById('adjustDept').textContent = data.dept || '';
+          document.getElementById('adjustPoint').textContent = data.point || '';
           document.getElementById('memberInfo').classList.remove('hidden');
           document.getElementById('adjustForm').classList.remove('hidden');
           adjustMsg.textContent = '';
@@ -117,15 +117,20 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   confirmAdjustBtn.addEventListener('click', () => {
+    console.log('🟡 點了確認新增');
+
     const adjustType = document.getElementById('adjustType').value;
     const adjustAmountRaw = document.getElementById('adjustAmount').value.trim();
     const adjustReason = document.getElementById('adjustReason').value.trim();
     const adjustCashier = document.getElementById('adjustCashier').value.trim();
     const adjustMsg = document.getElementById('adjustMsg');
-
     const adjustAmount = Number(adjustAmountRaw);
 
-    // ✅ 僅檢查表單欄位，不檢查 currentMember 內容
+    console.log('📦 金額:', adjustAmount);
+    console.log('📦 原因:', adjustReason);
+    console.log('📦 出資人:', adjustCashier);
+    console.log('📦 currentMember:', currentMember);
+
     if (!adjustType || isNaN(adjustAmount) || adjustAmount <= 0 || !adjustReason || !adjustCashier) {
       adjustMsg.textContent = '請完整填寫「儲值 / 扣款內容」欄位';
       return;
