@@ -5,6 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const adjustPointsUrl = 'https://script.google.com/macros/s/AKfycbwxXd4ZRvBD--eOMEz3S-etWTWX7gGTmF3tyPk6fa8Eo7s4X0sdiJ-4kwnTehZK3KaZ/exec';
 
   const actionSelect = document.getElementById('actionSelect');
+  const memberSelect = document.getElementById('memberSelect');
+  const selectMemberBtn = document.getElementById('selectMemberBtn');
+  const multipleResults = document.getElementById('multipleResults');
+
   actionSelect.addEventListener('change', function () {
     document.getElementById('addMemberSection').classList.add('hidden');
     document.getElementById('adjustPointsSection').classList.add('hidden');
@@ -93,36 +97,30 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(data => {
         console.log('🔁 查詢回應：', data);
 
-        // ✅ 如果是多筆同名結果（新增支援）
         if (Array.isArray(data.members)) {
-          const list = data.members.map(member =>
-            `姓名：${member.name}，電話：${member.phone}，LINE ID：${member.lineID}，處室：${member.dept}，點數：${member.point}`
-          ).join('\n');
-          alert('🔍 查到多筆同名會員：\n' + list);
-          adjustMsg.textContent = '請輸入更明確的條件查詢（如 LINE ID 或電話）';
+          // 顯示多筆會員選擇器
+          multipleResults.classList.remove('hidden');
+          memberSelect.innerHTML = '';
+          data.members.forEach((member, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = `姓名：${member.name}｜電話：${member.phone}｜LINE ID：${member.lineID}｜處室：${member.dept}｜點數：${member.point}`;
+            memberSelect.appendChild(option);
+          });
+          // 儲存可選成員資訊
+          memberSelect.dataset.members = JSON.stringify(data.members);
+          adjustMsg.textContent = '';
           return;
         }
 
         if (data.status === 'found') {
-          currentMember = {
-            name: String(data.name || '').trim() || '-',
-            phone: String(data.phone || '').trim() || '-',
-            lineID: String(data.lineID || '').trim() || '-',
-            dept: String(data.dept || '').trim() || '-'
-          };
-
-          document.getElementById('adjustName').textContent = currentMember.name;
-          document.getElementById('adjustPhone').textContent = currentMember.phone;
-          document.getElementById('adjustLineID').textContent = currentMember.lineID;
-          document.getElementById('adjustDept').textContent = currentMember.dept;
-          document.getElementById('adjustPoint').textContent = String(data.point || '').trim();
-          document.getElementById('memberInfo').classList.remove('hidden');
-          document.getElementById('adjustForm').classList.remove('hidden');
-          adjustMsg.textContent = '';
+          multipleResults.classList.add('hidden');
+          showMemberData(data);
         } else {
-          adjustMsg.textContent = data.message || '查無會員';
+          multipleResults.classList.add('hidden');
           document.getElementById('memberInfo').classList.add('hidden');
           document.getElementById('adjustForm').classList.add('hidden');
+          adjustMsg.textContent = data.message || '查無會員';
         }
       })
       .catch(err => {
@@ -130,6 +128,32 @@ document.addEventListener('DOMContentLoaded', function () {
         adjustMsg.textContent = '查詢發生錯誤';
       });
   });
+
+  selectMemberBtn.addEventListener('click', () => {
+    const members = JSON.parse(memberSelect.dataset.members || '[]');
+    const selected = members[memberSelect.value];
+    if (selected) {
+      showMemberData(selected);
+      multipleResults.classList.add('hidden');
+    }
+  });
+
+  function showMemberData(data) {
+    currentMember = {
+      name: String(data.name || '').trim() || '-',
+      phone: String(data.phone || '').trim() || '-',
+      lineID: String(data.lineID || '').trim() || '-',
+      dept: String(data.dept || '').trim() || '-'
+    };
+
+    document.getElementById('adjustName').textContent = currentMember.name;
+    document.getElementById('adjustPhone').textContent = currentMember.phone;
+    document.getElementById('adjustLineID').textContent = currentMember.lineID;
+    document.getElementById('adjustDept').textContent = currentMember.dept;
+    document.getElementById('adjustPoint').textContent = String(data.point || '').trim();
+    document.getElementById('memberInfo').classList.remove('hidden');
+    document.getElementById('adjustForm').classList.remove('hidden');
+  }
 
   confirmAdjustBtn.addEventListener('click', () => {
     console.log('🟡 點了確認新增');
